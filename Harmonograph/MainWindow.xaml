@@ -1,12 +1,134 @@
-﻿<Window x:Class="Harmonograph.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Harmonograph"
+        xmlns:oxy="http://oxyplot.org/wpf" x:Class="Harmonograph.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross">
     <Grid>
-        
+        <Canvas x:Name="canvas1" Margin="0" Background="Black" SizeChanged="Canvas1_SizeChanged"/>
+
+
+
+        <DockPanel HorizontalAlignment="Left" Background="#FF363636" MouseEnter="DockPanel_MouseEnter" MouseLeave="DockPanel_MouseLeave" VerticalAlignment="Top">
+            <StackPanel HorizontalAlignment="Left">
+                <Label x:Name="label1" Content="Label"  Foreground="White" VerticalContentAlignment="Bottom" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Black"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Ax1" Foreground="White"/>
+                    <Label Grid.Column="0" Grid.Row="1" Content="Fx1" Foreground="White"/>
+                    <Label Grid.Column="0" Grid.Row="2" Content="Px1" Foreground="White"/>
+                    <Label Grid.Column="0" Grid.Row="3" Content="Dx1" Foreground="White"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="tbAx1" Text="300" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbFx1" Text="1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbPx1" Text="0" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="1" Grid.Row="3" x:Name="tbDx1" Text="0.0015" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+
+                    <Label Grid.Column="2" Grid.Row="0" Content="Ax2" Foreground="White" />
+                    <Label Grid.Column="2" Grid.Row="1" Content="Fx2" Foreground="White"/>
+                    <Label Grid.Column="2" Grid.Row="2" Content="Px2" Foreground="White"/>
+                    <Label Grid.Column="2" Grid.Row="3" Content="Dx2" Foreground="White"/>
+                    <TextBox Grid.Column="3" Grid.Row="0" x:Name="tbAx2" Text="200" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="tbFx2" Text="1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="3" Grid.Row="2" x:Name="tbPx2" Text="1.57" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="3" Grid.Row="3" x:Name="tbDx2" Text="0.0015" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+
+                    <Label Grid.Column="4" Grid.Row="0" Content="Ay1" Foreground="White"/>
+                    <Label Grid.Column="4" Grid.Row="1" Content="Fy1" Foreground="White"/>
+                    <Label Grid.Column="4" Grid.Row="2" Content="Py1" Foreground="White"/>
+                    <Label Grid.Column="4" Grid.Row="3" Content="Dy1" Foreground="White"/>
+                    <TextBox Grid.Column="5" Grid.Row="0" x:Name="tbAy1" Text="100" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="tbFy1" Text="1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="tbPy1" Text="1.57" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="5" Grid.Row="3" x:Name="tbDy1" Text="0.0015" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+
+                    <Label Grid.Column="6" Grid.Row="0" Content="Ay2" Foreground="White"/>
+                    <Label Grid.Column="6" Grid.Row="1" Content="Fy2" Foreground="White"/>
+                    <Label Grid.Column="6" Grid.Row="2" Content="Py2" Foreground="White"/>
+                    <Label Grid.Column="6" Grid.Row="3" Content="Dy2" Foreground="White"/>
+                    <TextBox Grid.Column="7" Grid.Row="0" x:Name="tbAy2" Text="80" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="7" Grid.Row="1" x:Name="tbFy2" Text="1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="7" Grid.Row="2" x:Name="tbPy2" Text="0" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+                    <TextBox Grid.Column="7" Grid.Row="3" x:Name="tbDy2" Text="0.0015" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White"/>
+
+                </Grid>
+
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <Label Content="Time Divider" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Slider x:Name="sliderT" 
+                            IsSnapToTickEnabled="True"
+                            MinWidth="100" 
+                            Minimum="1" 
+                            Maximum="100" 
+                            SmallChange="1" 
+                            LargeChange="10"
+                            Value="100"/>
+                            <Label x:Name="labelT" Foreground="White" Content="{Binding Value, ElementName=sliderT}" Margin="0,0,20,0"></Label>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <Label Content="Color Changing Rate" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Slider x:Name="sliderFc"  
+                            IsSnapToTickEnabled="True"
+                            MinWidth="100" 
+                            Minimum="1" 
+                            SmallChange="1" 
+                            LargeChange="10" 
+                            ValueChanged="SliderColor_ValueChanged" 
+                            Maximum="50" Value="20"/>
+                            <Label x:Name="labelFc" Foreground="White" Content="{Binding Value, ElementName=sliderFc}"></Label>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel>
+                        <Label Content="Trail Length" Foreground="White"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Slider IsSnapToTickEnabled="True"
+                            IsSelectionRangeEnabled="True"
+                            SelectionStart="300"
+                            SelectionEnd="600"
+                            Value="300"
+                            x:Name="sliderTrailLength"  
+                            MinWidth="100" 
+                            Minimum="10" 
+                            SmallChange="10" 
+                            LargeChange="100" 
+                            Maximum="1000" />
+                            <Label x:Name="labelTrailLength" Foreground="White" Content="{Binding Value, ElementName=sliderTrailLength}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Bottom">
+                        <Button HorizontalAlignment="Right" Click="Button_Click_1" VerticalAlignment="Bottom">Reset Time</Button>
+                        <Separator Margin="3,2"/>
+                        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Click">Random</Button>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>
