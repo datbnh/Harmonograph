@@ -28,7 +28,7 @@ namespace Harmonograph
     /// </summary>
     public partial class MainWindow : Window
     {
-        Oscillator oH1, oV1, oC, oH2, oV2;
+        Oscillator oH1, oH2, oH3, oV1, oV2, oV3, oC;
 
         DispatcherTimer plotTimer;
         
@@ -97,11 +97,14 @@ namespace Harmonograph
             oH2 = new Oscillator();
             oV1 = new Oscillator();
             oV2 = new Oscillator();
+            oH3 = new Oscillator();
+            oV3 = new Oscillator();
 
             oC = new Oscillator(360, 0.001);
 
             isInitialised = true;
 
+            UpdateFc();
             UpdateOscillatorParameters();
 
 
@@ -187,37 +190,44 @@ namespace Harmonograph
 
         private void UpdateOscillatorParameters()
         {
+            double.TryParse(tbF1.Text, out oH1.F);
             double.TryParse(tbAx1.Text, out oH1.A);
-            double.TryParse(tbFx1.Text, out oH1.F);
-            double.TryParse(tbPx1.Text, out oH1.P);
-            double.TryParse(tbDx1.Text, out oH1.D);
-
-            double.TryParse(tbAx2.Text, out oH2.A);
-            double.TryParse(tbFx2.Text, out oH2.F);
-            double.TryParse(tbPx2.Text, out oH2.P);
-            double.TryParse(tbDx2.Text, out oH2.D);
-
             double.TryParse(tbAy1.Text, out oV1.A);
-            double.TryParse(tbFy1.Text, out oV1.F);
+            double.TryParse(tbPx1.Text, out oH1.P);
             double.TryParse(tbPy1.Text, out oV1.P);
-            double.TryParse(tbDy1.Text, out oV1.D);
+            double.TryParse(tbD1.Text, out oH1.D);
+            oV1.F = oH1.F;
+            oV1.D = oH1.D;
 
+            double.TryParse(tbF2.Text, out oH2.F);
+            double.TryParse(tbAx2.Text, out oH2.A);
             double.TryParse(tbAy2.Text, out oV2.A);
-            double.TryParse(tbFy2.Text, out oV2.F);
+            double.TryParse(tbPx2.Text, out oH2.P);
             double.TryParse(tbPy2.Text, out oV2.P);
-            double.TryParse(tbDy2.Text, out oV2.D);
+            double.TryParse(tbD2.Text, out oH2.D);
+            oV2.F = oH2.F;
+            oV2.D = oH2.D;
+
+            double.TryParse(tbF3.Text, out oH3.F);
+            double.TryParse(tbAx3.Text, out oH3.A);
+            double.TryParse(tbAy3.Text, out oV3.A);
+            double.TryParse(tbPx3.Text, out oH3.P);
+            double.TryParse(tbPy3.Text, out oV3.P);
+            double.TryParse(tbD3.Text, out oH3.D);
+            oV3.F = oH3.F;
+            oV3.D = oH3.D;
 
             //canvas1.Children.Clear();
         }
 
         public double X(double t)
         {
-            return oH1.U(t) + oH2.U(t) + OffsetH;
+            return oH1.U(t) + oH2.U(t) + oH3.U(t) + OffsetH;
         }
 
         public double Y(double t)
         {
-            return oV1.U(t) + oV2.U(t) + OffsetV;
+            return oV1.U(t) + oV2.U(t) + oV3.U(t) + OffsetV;
         }
 
         private void SliderColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -262,33 +272,33 @@ namespace Harmonograph
         {
             Random x = new Random();
             isInitialised = false;
-            var a1 = x.Next(000, 500);
-            var a2 = x.Next(0, 700-a1);
-            tbAx1.Text = (a1).ToString();
-            tbAx2.Text = (a2).ToString();
-            tbAy1.Text = (a1).ToString();
-            tbAy2.Text = (a2).ToString();
+            //var a1 = x.Next(000, 500);
+            //var a2 = x.Next(0, 700-a1);
+            //tbAx1.Text = (a1).ToString();
+            //tbAx2.Text = (a2).ToString();
+            //tbAy1.Text = (a1).ToString();
+            //tbAy2.Text = (a2).ToString();
 
-            var f1 = 1;//x.Next(0, 1000) / 100f;
-            var f3 = x.Next(150, 2000) / 100f;
-            var f2 = f1 * (x.Next(-100, 100) / 10000f + 1);
-            var f4 = f3 * (x.Next(-100, 100) / 100000f + 1);
-            tbFx1.Text = (f1).ToString();
-            tbFx2.Text = (f3).ToString();
-            tbFy1.Text = (f2).ToString();
-            tbFy2.Text = (f4).ToString();
+            //var f1 = 1;//x.Next(0, 1000) / 100f;
+            //var f3 = x.Next(150, 2000) / 100f;
+            //var f2 = f1 * (x.Next(-100, 100) / 10000f + 1);
+            //var f4 = f3 * (x.Next(-100, 100) / 100000f + 1);
+            //tbFx1.Text = (f1).ToString();
+            //tbFx2.Text = (f3).ToString();
+            //tbFy1.Text = (f2).ToString();
+            //tbFy2.Text = (f4).ToString();
 
-            var p1 = x.Next(-180, 180);
-            var p2 = x.Next(-180, 180);
-            tbPx1.Text = p1.ToString(); // (x.Next(0, 180)).ToString();
-            tbPx2.Text = p2.ToString();
-            tbPy1.Text = (p1 + 85 + x.Next(0, 10)).ToString();
-            tbPy2.Text = (p2 + 85 + x.Next(0, 10)).ToString();
+            //var p1 = x.Next(-180, 180);
+            //var p2 = x.Next(-180, 180);
+            //tbPx1.Text = p1.ToString(); // (x.Next(0, 180)).ToString();
+            //tbPx2.Text = p2.ToString();
+            //tbPy1.Text = (p1 + 85 + x.Next(0, 10)).ToString();
+            //tbPy2.Text = (p2 + 85 + x.Next(0, 10)).ToString();
 
-            tbDx1.Text = (x.Next(50, 500)/1000000f).ToString();
-            tbDx2.Text = (x.Next(200, 1500)/1000000f).ToString();
-            tbDy1.Text = (x.Next(50, 500)/1000000f).ToString();
-            tbDy2.Text = (x.Next(200, 1500)/1000000f).ToString();
+            //tbDx1.Text = (x.Next(50, 500)/1000000f).ToString();
+            //tbDx2.Text = (x.Next(200, 1500)/1000000f).ToString();
+            //tbDy1.Text = (x.Next(50, 500)/1000000f).ToString();
+            //tbDy2.Text = (x.Next(200, 1500)/1000000f).ToString();
 
             isInitialised = true;
             UpdateOscillatorParameters();
@@ -339,15 +349,15 @@ namespace Harmonograph
                 return A * Math.Sin(F * t + P * Math.PI / 180) * Math.Exp(-t * D);
             }
 
-            //public double C(double t)
-            //{
-            //    return A * Math.Cos(F * t + P) * Math.Exp(-t * D);
-            //}
+            public double C(double t)
+            {
+                return A * Math.Cos(F * t + P * Math.PI / 180) * Math.Exp(-t * D);
+            }
 
-            //public double S(double t)
-            //{
-            //    return A * Math.Sin(F * t) * Math.Exp(-t * D);
-            //}
+            public double S(double t)
+            {
+                return A * Math.Sin(F * t) * Math.Exp(-t * D);
+            }
         }
 
         
