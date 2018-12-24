@@ -222,12 +222,16 @@ namespace Harmonograph
 
         public double X(double t)
         {
-            return oH1.U(t) + oH2.U(t) + oH3.U(t) + OffsetH;
+            return ((bool)cb1.IsChecked ? oH1.U(t) : 0) 
+                + ((bool)cb2.IsChecked ? oH2.U(t) : 0) 
+                + ((bool)cb3.IsChecked ? oH3.U(t) : 0) + OffsetH;
         }
 
         public double Y(double t)
         {
-            return oV1.U(t) + oV2.U(t) + oV3.U(t) + OffsetV;
+            return ((bool)cb1.IsChecked ? oV1.U(t) : 0)
+               + ((bool)cb2.IsChecked ? oV2.U(t) : 0)
+               + ((bool)cb3.IsChecked ? oV3.U(t) : 0) + OffsetV;
         }
 
         private void SliderColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -252,11 +256,13 @@ namespace Harmonograph
         private void DockPanel_MouseEnter(object sender, MouseEventArgs e)
         {
             ((DockPanel)sender).Background = new SolidColorBrush(Color.FromArgb(128,128,128,128));
+            ((DockPanel)sender).Opacity = 1;
         }
 
         private void DockPanel_MouseLeave(object sender, MouseEventArgs e)
         {
             ((DockPanel)sender).Background = new SolidColorBrush(Colors.Transparent);
+            ((DockPanel)sender).Opacity = 0.2;
         }
 
 

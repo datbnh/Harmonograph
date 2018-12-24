@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Harmonograph"
         xmlns:oxy="http://oxyplot.org/wpf" x:Class="Harmonograph.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True">
     <Grid>
         <Canvas x:Name="canvas1" Margin="0" Background="Black" SizeChanged="Canvas1_SizeChanged"/>
         <DockPanel HorizontalAlignment="Left" Background="#FF363636" MouseEnter="DockPanel_MouseEnter" MouseLeave="DockPanel_MouseLeave" VerticalAlignment="Top">
@@ -15,13 +15,15 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
+
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
-                        
+                        <RowDefinition/>
+
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -33,47 +35,50 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Grid.Row="0" Foreground="White" Content="F1"  />
-                    <Label Grid.Column="0" Grid.Row="1" Foreground="White" Content="Ax1" />
-                    <Label Grid.Column="0" Grid.Row="2" Foreground="White" Content="Ay1" />
-                    <Label Grid.Column="0" Grid.Row="3" Foreground="White" Content="Px1" />
-                    <Label Grid.Column="0" Grid.Row="4" Foreground="White" Content="Py1" />
-                    <Label Grid.Column="0" Grid.Row="5" Foreground="White" Content="D1"  />
+                    <Label Grid.Column="0" Grid.Row="1" Foreground="White" Content="F1" HorizontalAlignment="Right"  />
+                    <Label Grid.Column="0" Grid.Row="2" Foreground="White" Content="Ax1" HorizontalAlignment="Right" />
+                    <Label Grid.Column="0" Grid.Row="3" Foreground="White" Content="Ay1" HorizontalAlignment="Right" />
+                    <Label Grid.Column="0" Grid.Row="4" Foreground="White" Content="Px1" HorizontalAlignment="Right" />
+                    <Label Grid.Column="0" Grid.Row="5" Foreground="White" Content="Py1" HorizontalAlignment="Right" />
+                    <Label Grid.Column="0" Grid.Row="6" Foreground="White" Content="D1" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="tbF1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
-                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbAx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbAy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="1" Grid.Row="3" x:Name="tbPx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="1" Grid.Row="4" x:Name="tbPy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
-                    <TextBox Grid.Column="1" Grid.Row="5" x:Name="tbD1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbF1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
+                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbAx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="1" Grid.Row="3" x:Name="tbAy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="1" Grid.Row="4" x:Name="tbPx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="1" Grid.Row="5" x:Name="tbPy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
+                    <TextBox Grid.Column="1" Grid.Row="6" x:Name="tbD1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <CheckBox Grid.Column="0" Grid.Row="0" x:Name="cb1" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 1" IsChecked="True"/>
+                    <CheckBox Grid.Column="2" Grid.Row="0" x:Name="cb2" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 2" Margin="10,0,0,0" IsChecked="True"/>
+                    <CheckBox Grid.Column="4" Grid.Row="0" x:Name="cb3" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 3" Margin="10,0,0,0"/>
 
-                    <Label Grid.Column="2" Grid.Row="0" Foreground="White" Content="F2"  />
-                    <Label Grid.Column="2" Grid.Row="1" Foreground="White" Content="Ax2" />
-                    <Label Grid.Column="2" Grid.Row="2" Foreground="White" Content="Ay2" />
-                    <Label Grid.Column="2" Grid.Row="3" Foreground="White" Content="Px2" />
-                    <Label Grid.Column="2" Grid.Row="4" Foreground="White" Content="Py2" />
-                    <Label Grid.Column="2" Grid.Row="5" Foreground="White" Content="D2"  />
+                    <Label Grid.Column="2" Grid.Row="1" Foreground="White" Content="F2" HorizontalAlignment="Right"  />
+                    <Label Grid.Column="2" Grid.Row="2" Foreground="White" Content="Ax2" HorizontalAlignment="Right" />
+                    <Label Grid.Column="2" Grid.Row="3" Foreground="White" Content="Ay2" HorizontalAlignment="Right" />
+                    <Label Grid.Column="2" Grid.Row="4" Foreground="White" Content="Px2" HorizontalAlignment="Right" />
+                    <Label Grid.Column="2" Grid.Row="5" Foreground="White" Content="Py2" HorizontalAlignment="Right" />
+                    <Label Grid.Column="2" Grid.Row="6" Foreground="White" Content="D2" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="3" Grid.Row="0" x:Name="tbF2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="2.01"      />
-                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="tbAx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
-                    <TextBox Grid.Column="3" Grid.Row="2" x:Name="tbAy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
-                    <TextBox Grid.Column="3" Grid.Row="3" x:Name="tbPx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="3" Grid.Row="4" x:Name="tbPy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="-90"     />
-                    <TextBox Grid.Column="3" Grid.Row="5" x:Name="tbD2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="tbF2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="2.01"      />
+                    <TextBox Grid.Column="3" Grid.Row="2" x:Name="tbAx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
+                    <TextBox Grid.Column="3" Grid.Row="3" x:Name="tbAy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
+                    <TextBox Grid.Column="3" Grid.Row="4" x:Name="tbPx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="3" Grid.Row="5" x:Name="tbPy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="-90"     />
+                    <TextBox Grid.Column="3" Grid.Row="6" x:Name="tbD2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
 
-                    <Label Grid.Column="4" Grid.Row="0" Foreground="White" Content="F3"  />
-                    <Label Grid.Column="4" Grid.Row="1" Foreground="White" Content="Ax3" />
-                    <Label Grid.Column="4" Grid.Row="2" Foreground="White" Content="Ay3" />
-                    <Label Grid.Column="4" Grid.Row="3" Foreground="White" Content="Px3" />
-                    <Label Grid.Column="4" Grid.Row="4" Foreground="White" Content="Py3" />
-                    <Label Grid.Column="4" Grid.Row="5" Foreground="White" Content="D3"  />
+                    <Label Grid.Column="4" Grid.Row="1" Foreground="White" Content="F3" HorizontalAlignment="Right"  />
+                    <Label Grid.Column="4" Grid.Row="2" Foreground="White" Content="Ax3" HorizontalAlignment="Right" />
+                    <Label Grid.Column="4" Grid.Row="3" Foreground="White" Content="Ay3" HorizontalAlignment="Right" />
+                    <Label Grid.Column="4" Grid.Row="4" Foreground="White" Content="Px3" HorizontalAlignment="Right" />
+                    <Label Grid.Column="4" Grid.Row="5" Foreground="White" Content="Py3" HorizontalAlignment="Right" />
+                    <Label Grid.Column="4" Grid.Row="6" Foreground="White" Content="D3" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="5" Grid.Row="0" x:Name="tbF3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
-                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="tbAx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="tbAy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="5" Grid.Row="3" x:Name="tbPx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="5" Grid.Row="4" x:Name="tbPy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
-                    <TextBox Grid.Column="5" Grid.Row="5" x:Name="tbD3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="tbF3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
+                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="tbAx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="5" Grid.Row="3" x:Name="tbAy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="5" Grid.Row="4" x:Name="tbPx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="5" Grid.Row="5" x:Name="tbPy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
+                    <TextBox Grid.Column="5" Grid.Row="6" x:Name="tbD3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
 
 
 
