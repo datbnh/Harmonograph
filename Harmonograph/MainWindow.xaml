@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:Harmonograph"
         xmlns:oxy="http://oxyplot.org/wpf" x:Class="Harmonograph.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True" Loaded="Window_Loaded">
     <Grid>
-        <Canvas x:Name="canvas1" Margin="0" Background="Black" SizeChanged="Canvas1_SizeChanged"/>
+        <Canvas x:Name="canvas1" Margin="0" Background="Black" SizeChanged="Canvas1_SizeChanged" SnapsToDevicePixels="False"/>
+        <Label x:Name="label1" Content="Label"  Foreground="White" VerticalContentAlignment="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Black"/>
         <DockPanel HorizontalAlignment="Left" Background="#FF363636" MouseEnter="DockPanel_MouseEnter" MouseLeave="DockPanel_MouseLeave" VerticalAlignment="Top">
             <StackPanel HorizontalAlignment="Left">
-                <Label x:Name="label1" Content="Label"  Foreground="White" VerticalContentAlignment="Bottom" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Black"/>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -42,15 +42,15 @@
                     <Label Grid.Column="0" Grid.Row="5" Foreground="White" Content="Py1" HorizontalAlignment="Right" />
                     <Label Grid.Column="0" Grid.Row="6" Foreground="White" Content="D1" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbF1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
-                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbAx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="1" Grid.Row="3" x:Name="tbAy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="1" Grid.Row="4" x:Name="tbPx1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="1" Grid.Row="5" x:Name="tbPy1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
-                    <TextBox Grid.Column="1" Grid.Row="6" x:Name="tbD1" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
-                    <CheckBox Grid.Column="0" Grid.Row="0" x:Name="cb1" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 1" IsChecked="True"/>
-                    <CheckBox Grid.Column="2" Grid.Row="0" x:Name="cb2" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 2" Margin="10,0,0,0" IsChecked="True"/>
-                    <CheckBox Grid.Column="4" Grid.Row="0" x:Name="cb3" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 3" Margin="10,0,0,0"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="tbF1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
+                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="tbAx1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="1" Grid.Row="3" x:Name="tbAy1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="1" Grid.Row="4" x:Name="tbPx1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="1" Grid.Row="5" x:Name="tbPy1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
+                    <TextBox Grid.Column="1" Grid.Row="6" x:Name="tbD1" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <CheckBox Grid.Column="0" Grid.Row="0" x:Name="cb1" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 1" IsChecked="True" Checked="Cb_CheckChanged" Unchecked="Cb_CheckChanged"/>
+                    <CheckBox Grid.Column="2" Grid.Row="0" x:Name="cb2" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 2" Margin="10,0,0,0" IsChecked="True" Checked="Cb_CheckChanged" Unchecked="Cb_CheckChanged"/>
+                    <CheckBox Grid.Column="4" Grid.Row="0" x:Name="cb3" Grid.ColumnSpan="2" Foreground="White" Content="Pendulum 3" Margin="10,0,0,0" Checked="Cb_CheckChanged" Unchecked="Cb_CheckChanged"/>
 
                     <Label Grid.Column="2" Grid.Row="1" Foreground="White" Content="F2" HorizontalAlignment="Right"  />
                     <Label Grid.Column="2" Grid.Row="2" Foreground="White" Content="Ax2" HorizontalAlignment="Right" />
@@ -59,12 +59,12 @@
                     <Label Grid.Column="2" Grid.Row="5" Foreground="White" Content="Py2" HorizontalAlignment="Right" />
                     <Label Grid.Column="2" Grid.Row="6" Foreground="White" Content="D2" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="tbF2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="2.01"      />
-                    <TextBox Grid.Column="3" Grid.Row="2" x:Name="tbAx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
-                    <TextBox Grid.Column="3" Grid.Row="3" x:Name="tbAy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
-                    <TextBox Grid.Column="3" Grid.Row="4" x:Name="tbPx2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="3" Grid.Row="5" x:Name="tbPy2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="-90"     />
-                    <TextBox Grid.Column="3" Grid.Row="6" x:Name="tbD2" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <TextBox Grid.Column="3" Grid.Row="1" x:Name="tbF2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="2.01"      />
+                    <TextBox Grid.Column="3" Grid.Row="2" x:Name="tbAx2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
+                    <TextBox Grid.Column="3" Grid.Row="3" x:Name="tbAy2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="100"    />
+                    <TextBox Grid.Column="3" Grid.Row="4" x:Name="tbPx2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="3" Grid.Row="5" x:Name="tbPy2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="-90"     />
+                    <TextBox Grid.Column="3" Grid.Row="6" x:Name="tbD2" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
 
                     <Label Grid.Column="4" Grid.Row="1" Foreground="White" Content="F3" HorizontalAlignment="Right"  />
                     <Label Grid.Column="4" Grid.Row="2" Foreground="White" Content="Ax3" HorizontalAlignment="Right" />
@@ -73,12 +73,12 @@
                     <Label Grid.Column="4" Grid.Row="5" Foreground="White" Content="Py3" HorizontalAlignment="Right" />
                     <Label Grid.Column="4" Grid.Row="6" Foreground="White" Content="D3" HorizontalAlignment="Right"  />
 
-                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="tbF3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
-                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="tbAx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="5" Grid.Row="3" x:Name="tbAy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
-                    <TextBox Grid.Column="5" Grid.Row="4" x:Name="tbPx3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
-                    <TextBox Grid.Column="5" Grid.Row="5" x:Name="tbPy3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
-                    <TextBox Grid.Column="5" Grid.Row="6" x:Name="tbD3" TextChanged="TbAx1_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
+                    <TextBox Grid.Column="5" Grid.Row="1" x:Name="tbF3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="1"      />
+                    <TextBox Grid.Column="5" Grid.Row="2" x:Name="tbAx3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="5" Grid.Row="3" x:Name="tbAy3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="300"    />
+                    <TextBox Grid.Column="5" Grid.Row="4" x:Name="tbPx3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0"      />
+                    <TextBox Grid.Column="5" Grid.Row="5" x:Name="tbPy3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="90"     />
+                    <TextBox Grid.Column="5" Grid.Row="6" x:Name="tbD3" TextChanged="TextboxOscillatorParameter_TextChanged" VerticalContentAlignment="Center" Background="{x:Null}" Foreground="White" Text="0.0015" />
 
 
 
@@ -86,16 +86,16 @@
 
                 <StackPanel Orientation="Horizontal">
                     <StackPanel>
-                        <Label Content="Time Divider" Foreground="White"/>
+                        <Label Content="Time Divider [10^n]" Foreground="White"/>
                         <StackPanel Orientation="Horizontal">
                             <Slider x:Name="sliderT" 
                             IsSnapToTickEnabled="True"
                             MinWidth="100" 
-                            Minimum="1" 
-                            Maximum="100" 
+                            Minimum="-2" 
+                            Maximum="2" 
                             SmallChange="1" 
                             LargeChange="10"
-                            Value="100"/>
+                            Value="0"/>
                             <Label x:Name="labelT" Foreground="White" Content="{Binding Value, ElementName=sliderT}" Margin="0,0,20,0"></Label>
                         </StackPanel>
                     </StackPanel>
@@ -136,7 +136,7 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Bottom">
-                        <Button HorizontalAlignment="Right" Click="Button_Click_1" VerticalAlignment="Bottom">Reset Time</Button>
+                        <Button HorizontalAlignment="Right" Click="ResetButton_Clicked" VerticalAlignment="Bottom">Reset Time</Button>
                         <Separator Margin="3,2"/>
                         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Click">Random</Button>
                     </StackPanel>

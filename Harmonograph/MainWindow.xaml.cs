@@ -1,20 +1,11 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -29,24 +20,27 @@ namespace Harmonograph
     public partial class MainWindow : Window
     {
         Oscillator oH1, oH2, oH3, oV1, oV2, oV3, oC;
-
         DispatcherTimer plotTimer;
-        
         Stopwatch stopwatch;
 
-        private bool isUpdating;
+        bool isInitialised = false;
+        bool isPathUpdating = false;
+        private bool isPlotting = false;
 
-        private double lastT = 0;
+        private int currentSegmentStartIdx = 0;
 
-        double maxFps = 0;
+        private double simTime = 6000; // ms
+        private double timeRes = 0.05; // ms
+
         double minFps = double.MaxValue;
+        double maxFps = 0;
         double sumFps = 0;
         long frameCount = 0;
 
-        bool isInitialised = false;
-
         public double OffsetH;
         public double OffsetV;
+
+        public List<Point> path;
 
         /// <summary>
         /// alpha from 0 to 255, hue form 0 to 360, saturation from 0 to 1, value from 0 to 1.
@@ -85,10 +79,7 @@ namespace Harmonograph
         {
             InitializeComponent();
 
-            plotTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(1)
-            };
+            plotTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000/60) };
             plotTimer.Tick += Timer_Tick;
 
             stopwatch = new Stopwatch();
@@ -101,16 +92,6 @@ namespace Harmonograph
             oV3 = new Oscillator();
 
             oC = new Oscillator(360, 0.001);
-
-            isInitialised = true;
-
-            UpdateFc();
-            UpdateOscillatorParameters();
-
-
-            plotTimer.Start();
-            stopwatch.Start();
-
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -120,45 +101,50 @@ namespace Harmonograph
 
         private void UpdatePlot()
         {
-            if (isUpdating)
+            if (isPlotting) { return; }
+            if (isPathUpdating) { Console.WriteLine("Frame Dropped."); return; }
+
+            //var overlapping = 0;
+            var stopwatchTime = stopwatch.ElapsedMilliseconds;
+
+            isPlotting = true;
+
+            var endIdx = (int)(currentSegmentStartIdx + stopwatchTime / timeRes / TimeScale);
+            if (endIdx >= this.path.Count - 0) // 0 : overlapping
             {
-                Console.WriteLine("Drop");
-                return;
+                endIdx = this.path.Count - 0 - 1;
+                plotTimer.Stop();
+                stopwatch.Stop();
+            }
+            else
+            {
+                stopwatch.Restart();
             }
 
-            isUpdating = true;
+            PathFigure pathFigure = new PathFigure { StartPoint = this.path.ElementAt(currentSegmentStartIdx) };
 
-            var fps = 1 / (stopwatch.ElapsedMilliseconds / 1000f);
-
-            var currentT = lastT + stopwatch.ElapsedMilliseconds/sliderT.Value;
-            stopwatch.Restart();
-
-            var numPoints = 100;
-
-            PathFigure pathFigure = new PathFigure { StartPoint = new Point(X(lastT), Y(lastT)) };
             PathSegmentCollection pathSegments = new PathSegmentCollection();
 
-            for (int i = 1; i <= numPoints; i++)
+            for (int i = currentSegmentStartIdx + 1; i < endIdx + 0 + 1; i++)
             {
-                double t = lastT + (currentT - lastT) * i / numPoints;
-                pathSegments.Add(new LineSegment(new Point(X(t), Y(t)), true));
+                pathSegments.Add(new LineSegment(this.path.ElementAt(i), true));
             }
             pathFigure.Segments = pathSegments;
 
             PathFigureCollection pathFigures = new PathFigureCollection { pathFigure };
 
-            PathGeometry pathGeometry = new PathGeometry { Figures = pathFigures };
+            PathGeometry pathGeometry = new PathGeometry { Figures = pathFigures, };
 
             Path path = new Path
             {
                 StrokeThickness = 1,
-                Stroke = new SolidColorBrush(ColorFromAHSV(255, oC.U(currentT), 0.5, 1))
+                Stroke = new SolidColorBrush(ColorFromAHSV(255, oC.U(currentSegmentStartIdx), 0.5, 1))
             };
             path.Data = pathGeometry;
 
             canvas1.Children.Add(path);
 
-            if (canvas1.Children.Count > sliderTrailLength.Value)
+            while (canvas1.Children.Count > sliderTrailLength.Value)
             {
                 canvas1.Children.RemoveAt(0);
             }
@@ -166,19 +152,21 @@ namespace Harmonograph
             // Path > Path.Data = PathGemometry > PathGemometry.Figures = PathFigureCollection > 
             // PathFigure > PathFigure.StartPoint, PathFigure.Segments = PathSegmentCollection >
             // LineSegment > Point
-            
+
+            var fps = 1 / (stopwatchTime / 1000f);
             maxFps = fps > maxFps ? fps : maxFps;
             minFps = fps < minFps ? fps : minFps;
             sumFps += fps;
             frameCount++;
-            label1.Content = (fps.ToString("00.00") 
-                + " | " + minFps.ToString("00.00") 
-                + " | " + maxFps.ToString("00.00")
-                + " | " + (sumFps/frameCount).ToString("00.00")
-                + " | " + currentT.ToString("00.00"));
-            lastT = currentT;
+            label1.Content = ("FPS CUR " + fps.ToString("000.00")
+                + " | MIN " + minFps.ToString("00.00")
+                + " | MAX " + maxFps.ToString("0000.00")
+                + " | AVG " + (sumFps / frameCount).ToString("0000.00")
+                + " | CLOCK TIME " + (endIdx * timeRes * TimeScale / 1000f).ToString("00.000")
+                + " | SIMULATION TIME " + (endIdx * timeRes / 1000f).ToString("00.000"));
+            currentSegmentStartIdx = endIdx;
             
-            isUpdating = false;
+            isPlotting = false;
         }
 
         private void Canvas1_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -217,7 +205,57 @@ namespace Harmonograph
             oV3.F = oH3.F;
             oV3.D = oH3.D;
 
+            UpdatePath();
+
             //canvas1.Children.Clear();
+        }
+
+        private List<Point> GeneratePath(double startT, double endT, double timeResolution)
+        {
+            var msg = "Calculating path from " + startT + " to " + endT + "...";
+            label1.Content = msg;
+            var numPoints = (long)((endT - startT) / timeResolution);
+            List<Point> pathSegments = new List<Point>();
+            for (int i = 0; i <= numPoints; i++)
+            {
+                double t = startT + (endT - startT) * i / numPoints;
+                pathSegments.Add(new Point(X(t), Y(t)));
+            }
+            label1.Content = msg + " Done";
+            return pathSegments;
+        }
+
+        private void UpdatePath()
+        {
+            if (!isInitialised)
+                return;
+
+            stopwatch.Stop();
+            while (isPlotting) { }
+            isPathUpdating = true;
+
+            var temp = GeneratePath(currentSegmentStartIdx * timeRes, simTime, timeRes);
+            if (path == null)
+                path = temp;
+            for (int i = currentSegmentStartIdx; i <= simTime; i++)
+            {
+                path[i] = temp[i - currentSegmentStartIdx];
+            }
+
+            //path = GeneratePath(startIdx / GetSliderValue(sliderT, 0.1, 10), simTime, timeRes);
+            //startIdx = 0;
+            isPathUpdating = false;
+            stopwatch.Start();
+        }
+
+        private void Reset()
+        {
+            plotTimer.Stop();
+            currentSegmentStartIdx = 0;
+            path = GeneratePath(currentSegmentStartIdx, simTime, timeRes);
+            stopwatch.Restart();
+            plotTimer.Start();
+            canvas1.Children.Clear();
         }
 
         public double X(double t)
@@ -241,12 +279,13 @@ namespace Harmonograph
             UpdateFc();
         }
 
-        private void UpdateFc()
-        {
-            oC.F = sliderFc.Value / 1000;
+        private void UpdateFc() {
+            if (!isInitialised)
+                return;
+            oC.F = sliderFc.Value / 100000;
         }
 
-        private void TbAx1_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextboxOscillatorParameter_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!isInitialised)
                 return;
@@ -272,6 +311,23 @@ namespace Harmonograph
                 return (value - l2) / (u2 - l2) * (u1 - l1) + l1;
             else
                 return (value - l1) / (u1 - l1) * (u2 - l2) + l2;
+        }
+
+        private void Cb_CheckChanged(object sender, RoutedEventArgs e)
+        {
+            if (!isInitialised)
+                return;
+            UpdatePath();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            OffsetH = canvas1.ActualWidth / 2;
+            OffsetV = canvas1.ActualHeight / 2;
+            UpdateFc();
+            UpdateOscillatorParameters();
+            isInitialised = true;
+            Reset();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -321,17 +377,12 @@ namespace Harmonograph
             slider.Value = Scale(value, slider.Minimum, slider.Maximum, l, u, true);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ResetButton_Clicked(object sender, RoutedEventArgs e)
         {
             Reset();
         }
 
-        private void Reset()
-        {
-            lastT = 0;
-            stopwatch.Restart();
-            canvas1.Children.Clear();
-        }
+        public double TimeScale { get { return Math.Pow(10, GetSliderValue(sliderT, -2, 2)); } }
 
         internal class Oscillator
         {
@@ -365,7 +416,5 @@ namespace Harmonograph
                 return A * Math.Sin(F * t) * Math.Exp(-t * D);
             }
         }
-
-        
     }
 }
