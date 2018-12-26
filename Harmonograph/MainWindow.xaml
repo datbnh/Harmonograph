@@ -6,11 +6,41 @@
         xmlns:local="clr-namespace:Harmonograph"
         xmlns:oxy="http://oxyplot.org/wpf" x:Class="Harmonograph.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True" Loaded="Window_Loaded">
+        Title="Harmonograph" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True" Loaded="Window_Loaded">
     <Grid>
-        <Canvas x:Name="canvas1" Margin="0" Background="Black" SizeChanged="Canvas1_SizeChanged" SnapsToDevicePixels="False"/>
-        <Label x:Name="label1" Content="Label"  Foreground="White" VerticalContentAlignment="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Black"/>
-        <DockPanel HorizontalAlignment="Left" Background="#FF363636" MouseEnter="DockPanel_MouseEnter" MouseLeave="DockPanel_MouseLeave" VerticalAlignment="Top">
+        <Canvas x:Name="canvas1" Margin="0" SizeChanged="Canvas1_SizeChanged" SnapsToDevicePixels="False" MouseLeftButtonDown="Canvas1_MouseLeftButtonDown" MouseUp="Canvas1_MouseUp_1">
+            <Canvas.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="30.964" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FF131313" Offset="1"/>
+                </LinearGradientBrush>
+            </Canvas.Background>
+        </Canvas>
+        <Label x:Name="label1" Content="Label"  Foreground="White" VerticalContentAlignment="Bottom" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Label x:Name="label2" Content="(C) Augustine's Software 2018"  Foreground="#FF383838" VerticalContentAlignment="Bottom" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent" FontStyle="Italic"/>
+        <DockPanel HorizontalAlignment="Left" MouseEnter="DockPanel_MouseEnter" MouseLeave="DockPanel_MouseLeave" VerticalAlignment="Top">
+            <DockPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="137.121" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="Black" Offset="0"/>
+                    <GradientStop Color="#FF212121" Offset="1"/>
+                </LinearGradientBrush>
+            </DockPanel.Background>
             <StackPanel HorizontalAlignment="Left">
                 <Grid>
                     <Grid.RowDefinitions>

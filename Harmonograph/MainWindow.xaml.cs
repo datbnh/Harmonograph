@@ -113,7 +113,7 @@ namespace Harmonograph
         private void UpdatePlot()
         {
             if (isPlotting) { return; }
-            if (isPathUpdating) { Console.WriteLine("Frame Dropped."); return; }
+            if (isPathUpdating) { return; }
 
             //var overlapping = 0;
             var stopwatchTime = stopwatch.ElapsedMilliseconds;
@@ -331,14 +331,12 @@ namespace Harmonograph
 
         private void DockPanel_MouseEnter(object sender, MouseEventArgs e)
         {
-            ((DockPanel)sender).Background = new SolidColorBrush(Color.FromArgb(128,128,128,128));
             ((DockPanel)sender).Opacity = 1;
         }
 
         private void DockPanel_MouseLeave(object sender, MouseEventArgs e)
         {
-            ((DockPanel)sender).Background = new SolidColorBrush(Colors.Transparent);
-            ((DockPanel)sender).Opacity = 0.2;
+            ((DockPanel)sender).Opacity = 0.1;
         }
 
 
@@ -372,6 +370,36 @@ namespace Harmonograph
             Randomise();
         }
 
+        private void Canvas1_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+
+
+        }
+
+        private void Canvas1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+                if (this.WindowStyle != WindowStyle.None)
+                {
+                    this.WindowStyle = WindowStyle.None;
+                    if (this.WindowState == WindowState.Maximized)
+                        this.WindowState = WindowState.Normal;
+                    this.WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    this.WindowStyle = WindowStyle.SingleBorderWindow;
+                    this.WindowState = WindowState.Normal;
+                }
+            }
+        }
+
+        private void Canvas1_MouseUp_1(object sender, MouseButtonEventArgs e)
+        {
+            Randomise();
+        }
+
         private void Randomise()
         {
             Random x = new Random();
@@ -380,7 +408,6 @@ namespace Harmonograph
             var f1 = x.Next(1, 21) + 0f;
             var f2 = x.Next(1, 21) + 0f;
             var nearMiss = 1f + (x.Next(0, 5) < 1 ? 0 : 1) * x.Next(-5, 5) / 100f;
-            Console.WriteLine(nearMiss + " " + x.Next(0, 1));
             var f1Normed = (f1 > f2) ? 1 : f1 / f2;
             var f2Normed = (f1 > f2) ? f2 / f1 : 1;
             f2Normed = f2Normed * nearMiss;
