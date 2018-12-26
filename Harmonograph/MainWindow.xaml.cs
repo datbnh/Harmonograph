@@ -12,6 +12,8 @@ using System.Windows.Threading;
 namespace Harmonograph
 {
     // https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/how-to-create-a-linesegment-in-a-pathgeometry
+    // http://www.worldtreesoftware.com/harmonograph-intro.html#pre
+    // http://andygiger.com/science/harmonograph/index.html
 
 
     /// <summary>
@@ -21,6 +23,7 @@ namespace Harmonograph
     {
         Oscillator oH1, oH2, oH3, oV1, oV2, oV3, oC;
         DispatcherTimer plotTimer;
+        DispatcherTimer randomTimer;
         Stopwatch stopwatch;
 
         bool isInitialised = false;
@@ -29,7 +32,7 @@ namespace Harmonograph
 
         private int currentSegmentStartIdx = 0;
 
-        private double simTime = 6000; // ms
+        private double simTime = 2000; // ms
         private double timeRes = 0.05; // ms
 
         double minFps = double.MaxValue;
@@ -82,6 +85,9 @@ namespace Harmonograph
             plotTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000/60) };
             plotTimer.Tick += Timer_Tick;
 
+            randomTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
+            randomTimer.Tick += RandomTimer_Tick;
+
             stopwatch = new Stopwatch();
 
             oH1 = new Oscillator();
@@ -92,6 +98,11 @@ namespace Harmonograph
             oV3 = new Oscillator();
 
             oC = new Oscillator(360, 0.001);
+        }
+
+        private void RandomTimer_Tick(object sender, EventArgs e)
+        {
+            Randomise();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -115,6 +126,7 @@ namespace Harmonograph
                 endIdx = this.path.Count - 0 - 1;
                 plotTimer.Stop();
                 stopwatch.Stop();
+                randomTimer.Start();
             }
             else
             {
@@ -142,11 +154,19 @@ namespace Harmonograph
             };
             path.Data = pathGeometry;
 
-            canvas1.Children.Add(path);
-
-            while (canvas1.Children.Count > sliderTrailLength.Value)
+            using (var d = Dispatcher.DisableProcessing())
             {
-                canvas1.Children.RemoveAt(0);
+                canvas1.Children.Add(path);
+
+                //while (canvas1.Children.Count > sliderTrailLength.Value)
+                //{
+                //    canvas1.Children.RemoveAt(0);
+                //}
+                while (GetNumberOfSegments(canvas1) * timeRes > sliderTrailLength.Value)
+                {
+                    canvas1.Children.RemoveAt(0);
+                }
+
             }
 
             // Path > Path.Data = PathGemometry > PathGemometry.Figures = PathFigureCollection > 
@@ -163,10 +183,29 @@ namespace Harmonograph
                 + " | MAX " + maxFps.ToString("0000.00")
                 + " | AVG " + (sumFps / frameCount).ToString("0000.00")
                 + " | CLOCK TIME " + (endIdx * timeRes * TimeScale / 1000f).ToString("00.000")
-                + " | SIMULATION TIME " + (endIdx * timeRes / 1000f).ToString("00.000"));
+                + " | SIMULATION TIME " + (endIdx * timeRes / 1000f).ToString("00.000")
+                + (plotTimer.IsEnabled ? "" : " [DONE]"));
             currentSegmentStartIdx = endIdx;
             
             isPlotting = false;
+        }
+
+        public long GetNumberOfSegments(Canvas canvas)
+        {
+            var count = 0;
+            foreach (var item in canvas.Children)
+            {
+                if (item.GetType() == typeof(Path))
+                {
+                    var data = (item as Path).Data;
+                    if (data.GetType() == typeof(PathGeometry))
+                    {
+                        var fgs = (data as PathGeometry).Figures;
+                        count += fgs.First().Segments.Count;
+                    }
+                }
+            }
+            return count;
         }
 
         private void Canvas1_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -242,8 +281,6 @@ namespace Harmonograph
                 path[i] = temp[i - currentSegmentStartIdx];
             }
 
-            //path = GeneratePath(startIdx / GetSliderValue(sliderT, 0.1, 10), simTime, timeRes);
-            //startIdx = 0;
             isPathUpdating = false;
             stopwatch.Start();
         }
@@ -325,46 +362,60 @@ namespace Harmonograph
             OffsetH = canvas1.ActualWidth / 2;
             OffsetV = canvas1.ActualHeight / 2;
             UpdateFc();
-            UpdateOscillatorParameters();
+            //UpdateOscillatorParameters();
             isInitialised = true;
-            Reset();
+            Randomise();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Randomise();
+        }
+
+        private void Randomise()
+        {
             Random x = new Random();
             isInitialised = false;
-            //var a1 = x.Next(000, 500);
-            //var a2 = x.Next(0, 700-a1);
-            //tbAx1.Text = (a1).ToString();
-            //tbAx2.Text = (a2).ToString();
-            //tbAy1.Text = (a1).ToString();
-            //tbAy2.Text = (a2).ToString();
 
-            //var f1 = 1;//x.Next(0, 1000) / 100f;
-            //var f3 = x.Next(150, 2000) / 100f;
-            //var f2 = f1 * (x.Next(-100, 100) / 10000f + 1);
-            //var f4 = f3 * (x.Next(-100, 100) / 100000f + 1);
-            //tbFx1.Text = (f1).ToString();
-            //tbFx2.Text = (f3).ToString();
-            //tbFy1.Text = (f2).ToString();
-            //tbFy2.Text = (f4).ToString();
+            var f1 = x.Next(1, 21) + 0f;
+            var f2 = x.Next(1, 21) + 0f;
+            var nearMiss = 1f + (x.Next(0, 5) < 1 ? 0 : 1) * x.Next(-5, 5) / 100f;
+            Console.WriteLine(nearMiss + " " + x.Next(0, 1));
+            var f1Normed = (f1 > f2) ? 1 : f1 / f2;
+            var f2Normed = (f1 > f2) ? f2 / f1 : 1;
+            f2Normed = f2Normed * nearMiss;
 
-            //var p1 = x.Next(-180, 180);
-            //var p2 = x.Next(-180, 180);
-            //tbPx1.Text = p1.ToString(); // (x.Next(0, 180)).ToString();
-            //tbPx2.Text = p2.ToString();
-            //tbPy1.Text = (p1 + 85 + x.Next(0, 10)).ToString();
-            //tbPy2.Text = (p2 + 85 + x.Next(0, 10)).ToString();
-
-            //tbDx1.Text = (x.Next(50, 500)/1000000f).ToString();
-            //tbDx2.Text = (x.Next(200, 1500)/1000000f).ToString();
-            //tbDy1.Text = (x.Next(50, 500)/1000000f).ToString();
-            //tbDy2.Text = (x.Next(200, 1500)/1000000f).ToString();
+            tbF1.Text = f1Normed.ToString();
+            tbF2.Text = f2Normed.ToString();
+            //------------------------------
+            //var px1 = x.Next(0, 180);
+            var bound = 10;
+            var px1 = 0;
+            var p1xy = x.Next(-bound, bound + 1) + 90;
+            var p2xy = x.Next(-bound, bound + 1) + 90 * (x.Next(0, 2) == 1 ? 1 : -1);
+            var p12 = x.Next(0, 181);
+            tbPx1.Text = px1.ToString();
+            tbPy1.Text = (px1 + p1xy).ToString();
+            tbPx2.Text = (px1 + p12).ToString();
+            tbPy2.Text = (px1 + p12 + p2xy).ToString();
+            //------------------------------
+            var d1 = x.Next(0, 501) / 1000000f;
+            var d2 = x.Next(100, 2001) / 100000f;
+            tbD1.Text = d1.ToString();
+            tbD2.Text = d2.ToString();
+            //------------------------------
+            var a1 = x.Next(0, (int)OffsetH);
+            var a2 = x.Next(0, (int)OffsetH);
+            tbAx1.Text = a1.ToString();
+            tbAy1.Text = a1.ToString();
+            tbAx2.Text = a2.ToString();
+            tbAy2.Text = a2.ToString();
 
             isInitialised = true;
             UpdateOscillatorParameters();
             Reset();
+
+            randomTimer.Stop();
         }
 
         public double GetSliderValue(Slider slider, double l, double u)

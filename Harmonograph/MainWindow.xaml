@@ -90,12 +90,13 @@
                         <StackPanel Orientation="Horizontal">
                             <Slider x:Name="sliderT" 
                             IsSnapToTickEnabled="True"
+                            Ticks="-2 -1 -0.5 0 0.2 0.5 1 2"
                             MinWidth="100" 
                             Minimum="-2" 
                             Maximum="2" 
-                            SmallChange="1" 
-                            LargeChange="10"
-                            Value="0"/>
+                            SmallChange="0.2" 
+                            LargeChange="1"
+                            Value="1"/>
                             <Label x:Name="labelT" Foreground="White" Content="{Binding Value, ElementName=sliderT}" Margin="0,0,20,0"></Label>
                         </StackPanel>
                     </StackPanel>
@@ -110,7 +111,7 @@
                             SmallChange="1" 
                             LargeChange="10" 
                             ValueChanged="SliderColor_ValueChanged" 
-                            Maximum="50" Value="20"/>
+                            Maximum="50" Value="10"/>
                             <Label x:Name="labelFc" Foreground="White" Content="{Binding Value, ElementName=sliderFc}"></Label>
                         </StackPanel>
                     </StackPanel>
@@ -124,13 +125,13 @@
                             IsSelectionRangeEnabled="True"
                             SelectionStart="300"
                             SelectionEnd="600"
-                            Value="300"
+                            Value="6000"
                             x:Name="sliderTrailLength"  
                             MinWidth="100" 
                             Minimum="10" 
                             SmallChange="10" 
                             LargeChange="100" 
-                            Maximum="1000" />
+                            Maximum="6000" />
                             <Label x:Name="labelTrailLength" Foreground="White" Content="{Binding Value, ElementName=sliderTrailLength}" />
                         </StackPanel>
                     </StackPanel>
