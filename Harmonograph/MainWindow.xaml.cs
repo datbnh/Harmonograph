@@ -21,7 +21,8 @@ namespace Harmonograph
     /// </summary>
     public partial class MainWindow : Window
     {
-        Oscillator oH1, oH2, oH3, oV1, oV2, oV3, oC;
+        //Oscillator oH1, oH2, oH3, oV1, oV2, oV3, oC;
+        Simulator simulator;
         DispatcherTimer plotTimer;
         DispatcherTimer randomTimer;
         Stopwatch stopwatch;
@@ -32,7 +33,7 @@ namespace Harmonograph
 
         private int currentSegmentStartIdx = 0;
 
-        private double simTime = 2000; // ms
+        private double simTime = 5000; // ms
         private double timeRes = 0.05; // ms
 
         double minFps = double.MaxValue;
@@ -44,45 +45,30 @@ namespace Harmonograph
         public double OffsetV;
 
         public List<Point> path;
-
-        /// <summary>
-        /// alpha from 0 to 255, hue form 0 to 360, saturation from 0 to 1, value from 0 to 1.
-        /// </summary>
-        /// <param name="alpha">0 to 255</param>
-        /// <param name="hue">0 to 360</param>
-        /// <param name="saturation">0 to 1</param>
-        /// <param name="value">0 to 1</param>
-        /// <returns></returns>
-        public static Color ColorFromAHSV(byte alpha, double hue, double saturation, double value)
-        {
-            int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-            double f = hue / 60 - Math.Floor(hue / 60);
-
-            value = value * 255;
-            byte v = (byte)Convert.ToInt32(value);
-            byte p = (byte)Convert.ToInt32(value * (1 - saturation));
-            byte q = (byte)Convert.ToInt32(value * (1 - f * saturation));
-            byte t = (byte)Convert.ToInt32(value * (1 - (1 - f) * saturation));
-
-            if (hi == 0)
-                return Color.FromArgb(alpha, v, t, p);
-            else if (hi == 1)
-                return Color.FromArgb(alpha, q, v, p);
-            else if (hi == 2)
-                return Color.FromArgb(alpha, p, v, t);
-            else if (hi == 3)
-                return Color.FromArgb(alpha, p, q, v);
-            else if (hi == 4)
-                return Color.FromArgb(alpha, t, p, v);
-            else
-                return Color.FromArgb(alpha, v, p, q);
-        }
+        private double AngularFrequency1;
+        private double AmplitudeY1;
+        private double AmplitudeX1;
+        private double InitialPhaseX1;
+        private double InitialPhaseY1;
+        private double DecayConstant1;
+        private double AngularFrequency2;
+        private double AmplitudeY2;
+        private double AmplitudeX2;
+        private double InitialPhaseY2;
+        private double InitialPhaseX2;
+        private double DecayConstant2;
+        private double AngularFrequency3;
+        private double AmplitudeY3;
+        private double AmplitudeX3;
+        private double InitialPhaseX3;
+        private double InitialPhaseY3;
+        private double DecayConstant3;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            plotTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000/60) };
+            plotTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000 / 60) };
             plotTimer.Tick += Timer_Tick;
 
             randomTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.5) };
@@ -90,19 +76,24 @@ namespace Harmonograph
 
             stopwatch = new Stopwatch();
 
-            oH1 = new Oscillator();
-            oH2 = new Oscillator();
-            oV1 = new Oscillator();
-            oV2 = new Oscillator();
-            oH3 = new Oscillator();
-            oV3 = new Oscillator();
+            simulator = new Simulator();
 
-            oC = new Oscillator(360, 0.001);
+            //oH1 = new Oscillator();
+            //oH2 = new Oscillator();
+            //oV1 = new Oscillator();
+            //oV2 = new Oscillator();
+            //oH3 = new Oscillator();
+            //oV3 = new Oscillator();
+
+            //oC = new Oscillator(360, 0.001);
         }
 
         private void RandomTimer_Tick(object sender, EventArgs e)
         {
-            Randomise();
+            if ((bool)cbAutoRandomise.IsChecked)
+            {
+                Randomise();
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -150,7 +141,8 @@ namespace Harmonograph
             Path path = new Path
             {
                 StrokeThickness = 1,
-                Stroke = new SolidColorBrush(ColorFromAHSV(255, oC.U(currentSegmentStartIdx), 0.5, 1))
+                //Stroke = new SolidColorBrush(Utilities.ColorFromAHSV(255, oC.GetInstantaniousAmplitutdeAtTime(currentSegmentStartIdx), 0.5, 1))
+                Stroke = new SolidColorBrush(simulator.GetColorAtTime(currentSegmentStartIdx)),
             };
             path.Data = pathGeometry;
 
@@ -186,7 +178,7 @@ namespace Harmonograph
                 + " | SIMULATION TIME " + (endIdx * timeRes / 1000f).ToString("00.000")
                 + (plotTimer.IsEnabled ? "" : " [DONE]"));
             currentSegmentStartIdx = endIdx;
-            
+
             isPlotting = false;
         }
 
@@ -217,32 +209,59 @@ namespace Harmonograph
 
         private void UpdateOscillatorParameters()
         {
-            double.TryParse(tbF1.Text, out oH1.F);
-            double.TryParse(tbAx1.Text, out oH1.A);
-            double.TryParse(tbAy1.Text, out oV1.A);
-            double.TryParse(tbPx1.Text, out oH1.P);
-            double.TryParse(tbPy1.Text, out oV1.P);
-            double.TryParse(tbD1.Text, out oH1.D);
-            oV1.F = oH1.F;
-            oV1.D = oH1.D;
+            double.TryParse(tbF1.Text, out AngularFrequency1);
+            double.TryParse(tbAx1.Text, out AmplitudeY1);
+            double.TryParse(tbAy1.Text, out AmplitudeX1);
+            double.TryParse(tbPx1.Text, out InitialPhaseX1);
+            double.TryParse(tbPy1.Text, out InitialPhaseY1);
+            double.TryParse(tbD1.Text, out DecayConstant1);
 
-            double.TryParse(tbF2.Text, out oH2.F);
-            double.TryParse(tbAx2.Text, out oH2.A);
-            double.TryParse(tbAy2.Text, out oV2.A);
-            double.TryParse(tbPx2.Text, out oH2.P);
-            double.TryParse(tbPy2.Text, out oV2.P);
-            double.TryParse(tbD2.Text, out oH2.D);
-            oV2.F = oH2.F;
-            oV2.D = oH2.D;
+            double.TryParse(tbF2.Text, out AngularFrequency2);
+            double.TryParse(tbAx2.Text, out AmplitudeY2);
+            double.TryParse(tbAy2.Text, out AmplitudeX2);
+            double.TryParse(tbPx2.Text, out InitialPhaseX2);
+            double.TryParse(tbPy2.Text, out InitialPhaseY2);
+            double.TryParse(tbD2.Text, out DecayConstant2);
 
-            double.TryParse(tbF3.Text, out oH3.F);
-            double.TryParse(tbAx3.Text, out oH3.A);
-            double.TryParse(tbAy3.Text, out oV3.A);
-            double.TryParse(tbPx3.Text, out oH3.P);
-            double.TryParse(tbPy3.Text, out oV3.P);
-            double.TryParse(tbD3.Text, out oH3.D);
-            oV3.F = oH3.F;
-            oV3.D = oH3.D;
+            double.TryParse(tbF3.Text, out AngularFrequency3);
+            double.TryParse(tbAx3.Text, out AmplitudeY3);
+            double.TryParse(tbAy3.Text, out AmplitudeX3);
+            double.TryParse(tbPx3.Text, out InitialPhaseX3);
+            double.TryParse(tbPy3.Text, out InitialPhaseY3);
+            double.TryParse(tbD3.Text, out DecayConstant3);
+
+            simulator.SetPendulumParameters(0, AmplitudeX1, AmplitudeY1, InitialPhaseX1, InitialPhaseY1,
+                AngularFrequency1, DecayConstant1);
+            simulator.SetPendulumParameters(1, AmplitudeX2, AmplitudeY2, InitialPhaseX2, InitialPhaseY2,
+                AngularFrequency2, DecayConstant2);
+            simulator.SetPendulumParameters(2, AmplitudeX3, AmplitudeY3, InitialPhaseX3, InitialPhaseY3,
+                AngularFrequency3, DecayConstant3);
+            //double.TryParse(tbF1.Text, out oH1.AngularFrequency);
+            //double.TryParse(tbAx1.Text, out oH1.Amplitude);
+            //double.TryParse(tbAy1.Text, out oV1.Amplitude);
+            //double.TryParse(tbPx1.Text, out oH1.InitialPhase);
+            //double.TryParse(tbPy1.Text, out oV1.InitialPhase);
+            //double.TryParse(tbD1.Text, out oH1.DecayConstant);
+            //oV1.AngularFrequency = oH1.AngularFrequency;
+            //oV1.DecayConstant = oH1.DecayConstant;
+
+            //double.TryParse(tbF2.Text, out oH2.AngularFrequency);
+            //double.TryParse(tbAx2.Text, out oH2.Amplitude);
+            //double.TryParse(tbAy2.Text, out oV2.Amplitude);
+            //double.TryParse(tbPx2.Text, out oH2.InitialPhase);
+            //double.TryParse(tbPy2.Text, out oV2.InitialPhase);
+            //double.TryParse(tbD2.Text, out oH2.DecayConstant);
+            //oV2.AngularFrequency = oH2.AngularFrequency;
+            //oV2.DecayConstant = oH2.DecayConstant;
+
+            //double.TryParse(tbF3.Text, out oH3.AngularFrequency);
+            //double.TryParse(tbAx3.Text, out oH3.Amplitude);
+            //double.TryParse(tbAy3.Text, out oV3.Amplitude);
+            //double.TryParse(tbPx3.Text, out oH3.InitialPhase);
+            //double.TryParse(tbPy3.Text, out oV3.InitialPhase);
+            //double.TryParse(tbD3.Text, out oH3.DecayConstant);
+            //oV3.AngularFrequency = oH3.AngularFrequency;
+            //oV3.DecayConstant = oH3.DecayConstant;
 
             UpdatePath();
 
@@ -297,16 +316,12 @@ namespace Harmonograph
 
         public double X(double t)
         {
-            return ((bool)cb1.IsChecked ? oH1.U(t) : 0) 
-                + ((bool)cb2.IsChecked ? oH2.U(t) : 0) 
-                + ((bool)cb3.IsChecked ? oH3.U(t) : 0) + OffsetH;
+           return simulator.GetInstantaniousCoordinate(t).X + OffsetH;
         }
 
         public double Y(double t)
         {
-            return ((bool)cb1.IsChecked ? oV1.U(t) : 0)
-               + ((bool)cb2.IsChecked ? oV2.U(t) : 0)
-               + ((bool)cb3.IsChecked ? oV3.U(t) : 0) + OffsetV;
+            return simulator.GetInstantaniousCoordinate(t).Y + OffsetV;
         }
 
         private void SliderColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -316,10 +331,11 @@ namespace Harmonograph
             UpdateFc();
         }
 
-        private void UpdateFc() {
+        private void UpdateFc()
+        {
             if (!isInitialised)
                 return;
-            oC.F = sliderFc.Value / 100000;
+            simulator.SetColorAngularFrequency(sliderFc.Value / 100000);
         }
 
         private void TextboxOscillatorParameter_TextChanged(object sender, TextChangedEventArgs e)
@@ -340,18 +356,29 @@ namespace Harmonograph
         }
 
 
-        public double Scale(double value, double l1, double u1, double l2, double u2, bool isInverted = false)
-        {
-            if (isInverted)
-                return (value - l2) / (u2 - l2) * (u1 - l1) + l1;
-            else
-                return (value - l1) / (u1 - l1) * (u2 - l2) + l2;
-        }
+
 
         private void Cb_CheckChanged(object sender, RoutedEventArgs e)
         {
             if (!isInitialised)
                 return;
+            var checkBox = (CheckBox)sender;
+            var isActivating = (bool)checkBox.IsChecked;
+            int index;
+            if (checkBox.Name.Contains("1"))
+                index = 0;
+            else if (checkBox.Name.Contains("2"))
+                index = 1;
+            else if (checkBox.Name.Contains("3"))
+                index = 2;
+            else
+                return;
+
+            if (isActivating)
+                simulator.ActivatePendulum(index);
+            else
+                simulator.DeactivatePendulum(index);
+
             UpdatePath();
         }
 
@@ -380,17 +407,17 @@ namespace Harmonograph
         {
             if (e.ClickCount == 2)
             {
-                if (this.WindowStyle != WindowStyle.None)
+                if (WindowStyle != WindowStyle.None)
                 {
-                    this.WindowStyle = WindowStyle.None;
-                    if (this.WindowState == WindowState.Maximized)
-                        this.WindowState = WindowState.Normal;
-                    this.WindowState = WindowState.Maximized;
+                    WindowStyle = WindowStyle.None;
+                    if (WindowState == WindowState.Maximized)
+                        WindowState = WindowState.Normal;
+                    WindowState = WindowState.Maximized;
                 }
                 else
                 {
-                    this.WindowStyle = WindowStyle.SingleBorderWindow;
-                    this.WindowState = WindowState.Normal;
+                    WindowStyle = WindowStyle.SingleBorderWindow;
+                    WindowState = WindowState.Normal;
                 }
             }
         }
@@ -447,12 +474,14 @@ namespace Harmonograph
 
         public double GetSliderValue(Slider slider, double l, double u)
         {
-            return Scale(slider.Value, slider.Minimum, slider.Maximum, l, u);
+            return Utilities.ConvertValueFromRange1ToRange2(slider.Value, 
+                slider.Minimum, slider.Maximum, l, u);
         }
 
         public void SetSliderValue(Slider slider, double value, double l, double u)
         {
-            slider.Value = Scale(value, slider.Minimum, slider.Maximum, l, u, true);
+            slider.Value = (int)Utilities.ConvertValueFromRange1ToRange2(value, l, u, slider.Minimum, 
+                slider.Maximum);
         }
 
         private void ResetButton_Clicked(object sender, RoutedEventArgs e)
@@ -461,38 +490,5 @@ namespace Harmonograph
         }
 
         public double TimeScale { get { return Math.Pow(10, GetSliderValue(sliderT, -2, 2)); } }
-
-        internal class Oscillator
-        {
-            public double A, F, P, D;
-
-            public Oscillator()
-            {
-
-            }
-
-            public Oscillator(double a, double f, double p = 0, double d = 0)
-            {
-                A = a;
-                F = f;
-                P = p;
-                D = d;
-            }
-
-            public double U(double t)
-            {
-                return A * Math.Sin(F * t + P * Math.PI / 180) * Math.Exp(-t * D);
-            }
-
-            public double C(double t)
-            {
-                return A * Math.Cos(F * t + P * Math.PI / 180) * Math.Exp(-t * D);
-            }
-
-            public double S(double t)
-            {
-                return A * Math.Sin(F * t) * Math.Exp(-t * D);
-            }
-        }
     }
 }

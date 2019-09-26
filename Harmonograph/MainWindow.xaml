@@ -166,10 +166,14 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Bottom">
-                        <Button HorizontalAlignment="Right" Click="ResetButton_Clicked" VerticalAlignment="Bottom">Reset Time</Button>
-                        <Separator Margin="3,2"/>
-                        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Click">Random</Button>
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox HorizontalAlignment="Right" x:Name="cbAutoRandomise" Content="Auto Randomise" Foreground="White"/>
+                        <Separator Margin="0,5"/>
+                        <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Bottom">
+                            <Button HorizontalAlignment="Right" Click="ResetButton_Clicked" VerticalAlignment="Bottom">Reset Time</Button>
+                            <Separator Margin="3,2"/>
+                            <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Click">Random</Button>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
