@@ -9,8 +9,8 @@ namespace Harmonograph
 {
     public class Pendulum
     {
-        private Oscillator OscillatorX;
-        private Oscillator OscillatorY;
+        private readonly Oscillator OscillatorX;
+        private readonly Oscillator OscillatorY;
 
         public double AmplitudeX { get => OscillatorX.Amplitude; set => OscillatorX.Amplitude = value; }
         public double AmplitudeY { get => OscillatorY.Amplitude; set => OscillatorY.Amplitude = value; }
@@ -36,36 +36,36 @@ namespace Harmonograph
             }
         }
 
-        private bool isActivated { get; set; }
+        public bool IsActivated { get; private set; }
 
         public Pendulum(double amplitudeX, double amplitudeY, double initialPhaseX, double initialPhaseY,
             double angularFrequency, double decayConstant, bool isActivated = true)
         {
             OscillatorX = new Oscillator(amplitudeX, angularFrequency, initialPhaseX, decayConstant);
             OscillatorY = new Oscillator(amplitudeY, angularFrequency, initialPhaseY, decayConstant);
-            this.isActivated = isActivated;
+            this.IsActivated = isActivated;
         }
 
         public void Activate()
         {
-            isActivated = true;
+            IsActivated = true;
         }
 
         public void Deactivate()
         {
-            isActivated = false;
+            IsActivated = false;
         }
 
         public double GetInstantaniousXValue(double time)
         {
-            if (!isActivated)
+            if (!IsActivated)
                 return 0;
             return OscillatorX.GetInstantaniousAmplitutdeAtTime(time);
         }
 
         public double GetInstantaniousYValue(double time)
         {
-            if (!isActivated)
+            if (!IsActivated)
                 return 0;
             return OscillatorY.GetInstantaniousAmplitutdeAtTime(time);
         }

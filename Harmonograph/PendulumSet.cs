@@ -8,23 +8,22 @@ using System.Windows.Media;
 
 namespace Harmonograph
 {
-    public class Simulator
+    public class PendulumSet
     {
-        private Oscillator oC;
+        //private Oscillator oC;
 
         private readonly Pendulum[] Pendulums;
 
         public readonly int NUM_PENDULUM = 3;
 
-        public Simulator()
+        public PendulumSet()
         {
             Pendulums = new Pendulum[NUM_PENDULUM];
             for (int i = 0; i < NUM_PENDULUM; i++)
             {
                 Pendulums[i] = new Pendulum(0, 0, 0, 0, 0, 0);
             }
-
-            oC = new Oscillator(360, 0.001);
+            //oC = new Oscillator(360, 0.001);
         }
 
         public void SetPendulumParameters(int pendulumIndex, double amplitudeX, double amplitudeY,
@@ -53,6 +52,14 @@ namespace Harmonograph
             SetPendulumState(index, false);
         }
 
+        public bool IsPendulumActivated(int index)
+        {
+            if (IsPendulumIndexOutOfBound(index))
+                throw new PendulumIndexOutOfBoundException();
+            return
+                Pendulums[index].IsActivated;
+        }
+
         private void SetPendulumState(int index, bool isActivatedState)
         {
             if (IsPendulumIndexOutOfBound(index))
@@ -79,20 +86,20 @@ namespace Harmonograph
             return coordinate;
         }
 
-        public Color GetColorAtTime(double time)
-        {
-            return Utilities.ColorFromAHSV(255, oC.GetInstantaniousAmplitutdeAtTime(time), 0.5, 1);
-        }
+        //public Color GetColorAtTime(double time)
+        //{
+        //    return Utilities.ColorFromAHSV(255, oC.GetInstantaniousAmplitutdeAtTime(time), 0.5, 1);
+        //}
 
         public class PendulumIndexOutOfBoundException : Exception
         {
             public PendulumIndexOutOfBoundException() : base("Pendulum index out of bound.") {; }
         }
 
-        internal void SetColorAngularFrequency(double v)
-        {
-            oC.AngularFrequency = v;
-        }
+        //internal void SetColorAngularFrequency(double v)
+        //{
+        //    oC.AngularFrequency = v;
+        //}
     }
 }
 
