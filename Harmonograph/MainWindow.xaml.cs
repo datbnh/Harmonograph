@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -101,7 +100,7 @@ namespace Harmonograph
             isPlotting = true;
 
             var path = Plotter.GeneratePath(LastUpdateTime, LastUpdateTime + stopwatchTime);
-            path.Stroke = new SolidColorBrush(Utilities.ColorFromAHSV(255, LastUpdateTime%36000, 0.5, 1));
+            path.Stroke = new SolidColorBrush(Utilities.ColorFromAHSV(255, LastUpdateTime % 36000, 0.5, 1));
             LastUpdateTime += stopwatchTime;
 
             Canvas.SetLeft(path, canvas1.ActualWidth / 2);
@@ -137,13 +136,11 @@ namespace Harmonograph
                 + " | MIN " + minFps.ToString("00.00")
                 + " | MAX " + maxFps.ToString("0000.00")
                 + " | AVG " + (sumFps / frameCount).ToString("0000.00")
-                + " | CLOCK TIME " + (LastUpdateTime/1000f).ToString("00.000")
-                + " | SIMULATION TIME " + (LastUpdateTime*Plotter.TimeResolution/1000f).ToString("00.000")
+                + " | CLOCK TIME " + (LastUpdateTime / 1000f).ToString("00.000")
+                + " | SIMULATION TIME " + (LastUpdateTime * Plotter.TimeResolution / 1000f).ToString("00.000")
                 + (PlotTimer.IsEnabled ? "" : " [DONE]"));
 
             isPlotting = false;
-
-            GC.Collect();
         }
 
         public long GetNumberOfSegments(Canvas canvas)
@@ -162,6 +159,22 @@ namespace Harmonograph
                 }
             }
             return count;
+        }
+
+        public void ClearSegmentsInCanvas(Canvas canvas)
+        {
+            foreach (var item in canvas.Children)
+            {
+                if (item.GetType() == typeof(Path))
+                {
+                    var data = (item as Path).Data;
+                    if (data.GetType() == typeof(PathGeometry))
+                    {
+                        (data as PathGeometry).Figures.Clear();
+                    }
+                    (item as Path).Data = null;
+                }
+            }
         }
 
         private void Canvas1_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -208,7 +221,13 @@ namespace Harmonograph
             PlotTimer.Stop();
             Stopwatch.Restart();
             PlotTimer.Start();
+            //ClearSegmentsInCanvas(canvas1);
             canvas1.Children.Clear();
+            //grid1.Children.RemoveAt(0);
+            //grid1.Children.Insert(0, canvas1);
+            this.UpdateLayout();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private void SliderColor_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -344,8 +363,8 @@ namespace Harmonograph
             tbD1.Text = d1.ToString();
             tbD2.Text = d2.ToString();
             //------------------------------
-            var a1 = x.Next(0, (int)(canvas1.ActualWidth/2));
-            var a2 = x.Next(0, (int)(canvas1.ActualHeight/2));
+            var a1 = x.Next(0, (int)(canvas1.ActualWidth / 2));
+            var a2 = x.Next(0, (int)(canvas1.ActualHeight / 2));
             tbAx1.Text = a1.ToString();
             tbAy1.Text = a1.ToString();
             tbAx2.Text = a2.ToString();

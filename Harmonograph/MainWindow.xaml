@@ -7,7 +7,7 @@
         xmlns:oxy="http://oxyplot.org/wpf" x:Class="Harmonograph.MainWindow"
         mc:Ignorable="d"
         Title="Harmonograph" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized" Cursor="Cross" SnapsToDevicePixels="True" Loaded="Window_Loaded">
-    <Grid>
+    <Grid x:Name="grid1">
         <Canvas x:Name="canvas1" Margin="0" SizeChanged="Canvas1_SizeChanged" SnapsToDevicePixels="False" MouseLeftButtonDown="Canvas1_MouseLeftButtonDown" MouseUp="Canvas1_MouseUp_1">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">

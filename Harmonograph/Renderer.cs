@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace Harmonograph
 {
@@ -42,7 +37,7 @@ namespace Harmonograph
             var startIndex = Math.Min(GetPointIndexFromTime(startTime), LastRenderedIndex);
             var endIndex = GetPointIndexFromTime(endTime);
 
-            Console.WriteLine("{0} {1}", startIndex, endIndex);
+            //Console.WriteLine("{0} {1}", startIndex, endIndex);
 
             var points = new List<Point>();
             for (long i = startIndex; i <= endIndex; i++)
@@ -84,7 +79,7 @@ namespace Harmonograph
             return path;
         }
 
-        
+
         private long GetPointIndexFromTime(double time)
         {
             return (long)Math.Round(time / TimeResolution);
@@ -95,16 +90,16 @@ namespace Harmonograph
             return index * TimeResolution;
         }
 
-        public struct ColorDefinedPoint
-        {
-            public readonly Color Color;
-            public readonly Vector Coordinate;
+        //public struct ColorDefinedPoint
+        //{
+        //    public readonly Color Color;
+        //    public readonly Vector Coordinate;
 
-            public ColorDefinedPoint(Color color, Point coordinate)
-            {
-                Color = color;
-                Coordinate = new Vector(coordinate.X, coordinate.Y);
-            }
-        }
+        //    public ColorDefinedPoint(Color color, Point coordinate)
+        //    {
+        //        Color = color;
+        //        Coordinate = new Vector(coordinate.X, coordinate.Y);
+        //    }
+        //}
     }
 }
